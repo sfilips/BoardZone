@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-labelledby="title">
+  <title id="title">Friends playing board games</title>
+  <rect width="600" height="400" fill="#171a21" />
+  <g fill="#3fb950" opacity="0.7">
+    <circle cx="180" cy="200" r="72" />
+    <circle cx="280" cy="200" r="72" />
+    <circle cx="380" cy="200" r="72" />
+  </g>
+  <g fill="#f59e0b" opacity="0.85">
+    <rect x="180" y="280" width="200" height="60" rx="18" />
+  </g>
+</svg>
