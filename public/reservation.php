@@ -3,8 +3,8 @@ $brandName = 'BoardZone';
 $pageTitle = 'Rezervace';
 $currentPage = 'reservation';
 $tables = [
-  ['id' => 'S-01', 'capacity' => 2], ['id' => 'S-02', 'capacity' => 2],
-  ['id' => 'M-01', 'capacity' => 4], ['id' => 'M-02', 'capacity' => 4],
+  ['id' => 'S-01', 'capacity' => 2], ['id' => 'S-02', 'capacity' => 2], ['id' => 'S-03', 'capacity' => 2],
+  ['id' => 'M-01', 'capacity' => 4], ['id' => 'M-02', 'capacity' => 4], ['id' => 'M-03', 'capacity' => 4],
   ['id' => 'L-01', 'capacity' => 6], ['id' => 'L-02', 'capacity' => 6],
 ];
 require __DIR__ . '/partials/head.php';
@@ -34,39 +34,12 @@ require __DIR__ . '/partials/header.php';
           <label class="form__field">
             <span>Délka</span>
             <select name="duration">
-              <option value="60">60 min</option>
-              <option value="90">90 min</option>
-              <option value="120">120 min</option>
-            </select>
-          </label>
-          <label class="form__field">
-            <span>Počet osob</span>
-            <select name="party">
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
+            <?php for ($minutes = 60; $minutes <= 300; $minutes += 30): ?>
+              <option value="<?php echo (int) $minutes; ?>"><?php echo (int) $minutes; ?> min</option>
+            <?php endfor; ?>
             </select>
           </label>
         </div>
-        <label class="form__field form__field--full">
-          <span>Poznámka k rezervaci</span>
-          <textarea name="note" rows="3" placeholder="Např. preferujeme klidnější kout."></textarea>
-        </label>
-        <fieldset class="reservation-form__filters">
-          <legend>Filtry</legend>
-          <label class="form__check">
-            <input type="checkbox" name="onlyFree" disabled>
-            <span>Jen volné stoly (brzy)</span>
-          </label>
-          <div class="form__radios" role="radiogroup" aria-label="Kapacita stolu">
-            <label><input type="radio" name="capacity" value="all" checked> <span>Vše</span></label>
-            <label><input type="radio" name="capacity" value="2"> <span>2 místa</span></label>
-            <label><input type="radio" name="capacity" value="4"> <span>4 místa</span></label>
-            <label><input type="radio" name="capacity" value="6"> <span>6 míst</span></label>
-          </div>
-        </fieldset>
       </form>
       <div class="table-grid" data-js="table-grid">
 <?php foreach ($tables as $table): ?>
