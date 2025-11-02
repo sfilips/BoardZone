@@ -3,6 +3,7 @@ const app = (() => {
   let isLogged = false;
   let activeModal = null;
   let lastFocusedElement = null;
+  let mobileNav = { toggle: null, drawer: null };
 
   const focusableSelectors = [
     'a[href]',
@@ -70,8 +71,16 @@ const app = (() => {
   }
 
   function handleKeydown(event) {
-    if (event.key === 'Escape' && activeModal) {
-      closeModal(activeModal);
+    if (event.key === 'Escape') {
+      if (activeModal) {
+        closeModal(activeModal);
+        return;
+      }
+
+      if (mobileNav.toggle && mobileNav.toggle.getAttribute('aria-expanded') === 'true') {
+        setMobileNav(false, mobileNav.toggle, mobileNav.drawer);
+        return;
+      }
     }
 
     if (event.key === 'Tab' && activeModal) {
@@ -212,12 +221,24 @@ const app = (() => {
     if (!toggle || !drawer) {
       return;
     }
+    mobileNav = { toggle, drawer };
     drawer.setAttribute('aria-hidden', 'true');
 
     toggle.addEventListener('click', () => {
       const expanded = toggle.getAttribute('aria-expanded') === 'true';
       setMobileNav(!expanded, toggle, drawer);
     });
+
+    drawer.addEventListener('click', (event) => {
+      if (event.target === drawer) {
+        setMobileNav(false, toggle, drawer);
+      }
+    });
+
+    const closeButton = qs('[data-js="nav-close"]', drawer);
+    if (closeButton) {
+      closeButton.addEventListener('click', () => setMobileNav(false, toggle, drawer));
+    }
 
     qsa('a', drawer).forEach((link) => {
       link.addEventListener('click', () => setMobileNav(false, toggle, drawer));
@@ -230,12 +251,16 @@ const app = (() => {
       drawer.hidden = false;
       requestAnimationFrame(() => {
         drawer.setAttribute('aria-hidden', 'false');
+        const firstFocusable =
+          qs('[data-js="nav-close"]', drawer) || qs('a[href]', drawer) || drawer;
+        firstFocusable.focus({ preventScroll: true });
       });
     } else {
       drawer.setAttribute('aria-hidden', 'true');
       const handleTransitionEnd = () => {
         drawer.hidden = true;
         drawer.removeEventListener('transitionend', handleTransitionEnd);
+        toggle.focus({ preventScroll: true });
       };
       drawer.addEventListener('transitionend', handleTransitionEnd);
     }

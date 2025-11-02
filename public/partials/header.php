@@ -22,17 +22,25 @@
     </div>
   </div>
   <div class="mobile-drawer" id="mobile-nav" hidden>
-    <nav class="mobile-drawer__nav" aria-label="Mobilní navigace">
-      <ul>
-        <li><a href="<?php echo $baseUrl; ?>/index.php"<?php if (($currentPage ?? '') === 'home') echo ' aria-current="page" class="is-active"'; ?>>Domů</a></li>
-        <li><a href="<?php echo $baseUrl; ?>/reservation.php"<?php if (($currentPage ?? '') === 'reservation') echo ' aria-current="page" class="is-active"'; ?>>Rezervace</a></li>
-        <li><a href="<?php echo $baseUrl; ?>/menu.php"<?php if (($currentPage ?? '') === 'menu') echo ' aria-current="page" class="is-active"'; ?>>Menu</a></li>
-        <li><a href="<?php echo $baseUrl; ?>/contact.php"<?php if (($currentPage ?? '') === 'contact') echo ' aria-current="page" class="is-active"'; ?>>Kontakt</a></li>
-      </ul>
-    </nav>
-    <div class="mobile-drawer__cta" data-js="auth-slot-mobile">
-      <button class="btn btn--ghost" type="button" data-js="open-login">Přihlásit</button>
-      <button class="btn btn--primary" type="button" data-js="open-register">Registrovat</button>
+    <div class="mobile-drawer__panel" role="dialog" aria-modal="true" aria-label="Mobilní navigace">
+      <div class="mobile-drawer__header">
+        <button class="mobile-drawer__close" type="button" data-js="nav-close" aria-label="Zavřít menu">
+          <span aria-hidden="true">←</span>
+          <span>Zpět</span>
+        </button>
+      </div>
+      <nav class="mobile-drawer__nav" aria-label="Mobilní navigace">
+        <ul>
+          <li><a href="<?php echo $baseUrl; ?>/index.php"<?php if (($currentPage ?? '') === 'home') echo ' aria-current="page" class="is-active"'; ?>>Domů</a></li>
+          <li><a href="<?php echo $baseUrl; ?>/reservation.php"<?php if (($currentPage ?? '') === 'reservation') echo ' aria-current="page" class="is-active"'; ?>>Rezervace</a></li>
+          <li><a href="<?php echo $baseUrl; ?>/menu.php"<?php if (($currentPage ?? '') === 'menu') echo ' aria-current="page" class="is-active"'; ?>>Menu</a></li>
+          <li><a href="<?php echo $baseUrl; ?>/contact.php"<?php if (($currentPage ?? '') === 'contact') echo ' aria-current="page" class="is-active"'; ?>>Kontakt</a></li>
+        </ul>
+      </nav>
+      <div class="mobile-drawer__cta" data-js="auth-slot-mobile">
+        <button class="btn btn--ghost" type="button" data-js="open-login">Přihlásit</button>
+        <button class="btn btn--primary" type="button" data-js="open-register">Registrovat</button>
+      </div>
     </div>
   </div>
 </header>
