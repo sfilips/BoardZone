@@ -47,41 +47,6 @@ require __DIR__ . '/partials/header.php';
     </div>
   </section>
 
-  <section class="section menu-preview">
-    <div class="shell">
-      <div class="section__header">
-        <h2>Ochutnejte naše menu</h2>
-        <a class="btn btn--link" href="<?php echo $baseUrl; ?>/menu.php">Celé menu</a>
-      </div>
-      <div class="menu-preview__lists">
-        <div>
-          <h3>Nápoje</h3>
-          <ul>
-            <li><span>IPA 12°</span><span>69 Kč</span></li>
-            <li><span>Stout s kakaem</span><span>75 Kč</span></li>
-            <li><span>Domácí limonáda</span><span>55 Kč</span></li>
-          </ul>
-        </div>
-        <div>
-          <h3>Jídlo</h3>
-          <ul>
-            <li><span>BoardZone burger</span><span>189 Kč</span></li>
-            <li><span>Vegetariánský wrap</span><span>149 Kč</span></li>
-            <li><span>Cheese &amp; dip set</span><span>129 Kč</span></li>
-          </ul>
-        </div>
-        <div>
-          <h3>Snacky</h3>
-          <ul>
-            <li><span>Nachos &amp; dip</span><span>89 Kč</span></li>
-            <li><span>Trhané maso sliders</span><span>139 Kč</span></li>
-            <li><span>Karamelizované ořechy</span><span>69 Kč</span></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section class="section venue-info">
     <div class="shell venue-info__grid">
       <div>
@@ -110,22 +75,6 @@ require __DIR__ . '/partials/header.php';
     </div>
   </section>
 
-  <section class="section gallery">
-    <div class="shell">
-      <h2>Večer v BoardZone</h2>
-      <div class="gallery__track" aria-label="Fotogalerie">
-        <figure>
-          <img src="<?php echo $baseUrl; ?>/assets/img/gallery-1.svg" alt="Pohled na stoly s deskovými hrami" loading="lazy">
-        </figure>
-        <figure>
-          <img src="<?php echo $baseUrl; ?>/assets/img/gallery-2.svg" alt="Detail karetní hry" loading="lazy">
-        </figure>
-        <figure>
-          <img src="<?php echo $baseUrl; ?>/assets/img/gallery-3.svg" alt="Skupina přátel hrající hru" loading="lazy">
-        </figure>
-      </div>
-    </div>
-  </section>
 </main>
 <?php
 require __DIR__ . '/partials/footer.php';
