@@ -65,6 +65,10 @@
     </div>
   </div>
   <div class="mobile-drawer" id="mobile-nav" hidden>
+    <button class="mobile-drawer__close" type="button" data-js="nav-close">
+      <span class="sr-only">Zavřít menu</span>
+      <span aria-hidden="true" class="mobile-drawer__close-icon"></span>
+    </button>
     <nav class="mobile-drawer__nav" aria-label="Mobilní navigace">
       <ul>
 <?php $renderNavItems($navItems); ?>

@@ -209,6 +209,7 @@ const app = (() => {
   function initMobileNav() {
     const toggle = qs('[data-js="nav-toggle"]');
     const drawer = document.getElementById('mobile-nav');
+    const close = drawer ? qs('[data-js="nav-close"]', drawer) : null;
     if (!toggle || !drawer) {
       return;
     }
@@ -216,28 +217,42 @@ const app = (() => {
 
     toggle.addEventListener('click', () => {
       const expanded = toggle.getAttribute('aria-expanded') === 'true';
-      setMobileNav(!expanded, toggle, drawer);
+      setMobileNav(!expanded, toggle, drawer, close);
     });
 
+    if (close) {
+      close.addEventListener('click', () => setMobileNav(false, toggle, drawer, close));
+    }
+
     qsa('a', drawer).forEach((link) => {
-      link.addEventListener('click', () => setMobileNav(false, toggle, drawer));
+      link.addEventListener('click', () => setMobileNav(false, toggle, drawer, close));
     });
   }
 
-  function setMobileNav(open, toggle, drawer) {
+  function setMobileNav(open, toggle, drawer, close) {
     toggle.setAttribute('aria-expanded', String(open));
     if (open) {
       drawer.hidden = false;
       requestAnimationFrame(() => {
         drawer.setAttribute('aria-hidden', 'false');
+        if (close) {
+          close.focus({ preventScroll: true });
+        }
       });
     } else {
       drawer.setAttribute('aria-hidden', 'true');
       const handleTransitionEnd = () => {
         drawer.hidden = true;
         drawer.removeEventListener('transitionend', handleTransitionEnd);
+        toggle.focus({ preventScroll: true });
       };
       drawer.addEventListener('transitionend', handleTransitionEnd);
+      const duration = getComputedStyle(drawer)
+        .transitionDuration.split(',')
+        .reduce((max, value) => Math.max(max, parseFloat(value) || 0), 0);
+      if (duration === 0) {
+        handleTransitionEnd();
+      }
     }
   }
 
