@@ -1,6 +1,53 @@
+<?php
+  $navItems = [
+    [
+      'id' => 'home',
+      'label' => 'Domů',
+      'path' => '/index.php',
+    ],
+    [
+      'id' => 'reservation',
+      'label' => 'Rezervace',
+      'path' => '/reservation.php',
+    ],
+    [
+      'id' => 'menu',
+      'label' => 'Menu',
+      'path' => '/menu.php',
+    ],
+    [
+      'id' => 'contact',
+      'label' => 'Kontakt',
+      'path' => '/contact.php',
+    ],
+  ];
+
+  $renderNavItems = function (array $items) use ($baseUrl, $currentPage) {
+    $current = $currentPage ?? '';
+    foreach ($items as $item) {
+      $href = htmlspecialchars($baseUrl . $item['path'], ENT_QUOTES, 'UTF-8');
+      $label = htmlspecialchars($item['label'], ENT_QUOTES, 'UTF-8');
+      $isActive = $current === $item['id'];
+      $attrs = $isActive ? ' aria-current="page" class="is-active"' : '';
+      echo "        <li><a href=\"{$href}\"{$attrs}>{$label}</a></li>\n";
+    }
+  };
+
+  $renderAuthButtons = function () {
+?>
+      <button class="btn btn--ghost" type="button" data-js="open-login">Přihlásit</button>
+      <button class="btn btn--primary" type="button" data-js="open-register">Registrovat</button>
+<?php
+  };
+?>
+
 <header class="site-header" data-component="site-header">
   <div class="shell site-header__inner">
-    <a class="site-header__brand" href="<?php echo $baseUrl; ?>/index.php" aria-label="<?php echo htmlspecialchars($brandName, ENT_QUOTES, 'UTF-8'); ?> domů">
+    <a
+      class="site-header__brand"
+      href="<?php echo htmlspecialchars($baseUrl . '/index.php', ENT_QUOTES, 'UTF-8'); ?>"
+      aria-label="<?php echo htmlspecialchars($brandName, ENT_QUOTES, 'UTF-8'); ?> domů"
+    >
       <span class="site-header__logo" aria-hidden="true">🎲</span>
       <span class="site-header__wordmark"><?php echo htmlspecialchars($brandName, ENT_QUOTES, 'UTF-8'); ?></span>
     </a>
@@ -10,29 +57,21 @@
     </button>
     <nav class="site-header__nav" aria-label="Hlavní navigace">
       <ul>
-        <li><a href="<?php echo $baseUrl; ?>/index.php"<?php if (($currentPage ?? '') === 'home') echo ' aria-current="page" class="is-active"'; ?>>Domů</a></li>
-        <li><a href="<?php echo $baseUrl; ?>/reservation.php"<?php if (($currentPage ?? '') === 'reservation') echo ' aria-current="page" class="is-active"'; ?>>Rezervace</a></li>
-        <li><a href="<?php echo $baseUrl; ?>/menu.php"<?php if (($currentPage ?? '') === 'menu') echo ' aria-current="page" class="is-active"'; ?>>Menu</a></li>
-        <li><a href="<?php echo $baseUrl; ?>/contact.php"<?php if (($currentPage ?? '') === 'contact') echo ' aria-current="page" class="is-active"'; ?>>Kontakt</a></li>
+<?php $renderNavItems($navItems); ?>
       </ul>
     </nav>
     <div class="site-header__cta" data-js="auth-slot">
-      <button class="btn btn--ghost" type="button" data-js="open-login">Přihlásit</button>
-      <button class="btn btn--primary" type="button" data-js="open-register">Registrovat</button>
+<?php $renderAuthButtons(); ?>
     </div>
   </div>
   <div class="mobile-drawer" id="mobile-nav" hidden>
     <nav class="mobile-drawer__nav" aria-label="Mobilní navigace">
       <ul>
-        <li><a href="<?php echo $baseUrl; ?>/index.php"<?php if (($currentPage ?? '') === 'home') echo ' aria-current="page" class="is-active"'; ?>>Domů</a></li>
-        <li><a href="<?php echo $baseUrl; ?>/reservation.php"<?php if (($currentPage ?? '') === 'reservation') echo ' aria-current="page" class="is-active"'; ?>>Rezervace</a></li>
-        <li><a href="<?php echo $baseUrl; ?>/menu.php"<?php if (($currentPage ?? '') === 'menu') echo ' aria-current="page" class="is-active"'; ?>>Menu</a></li>
-        <li><a href="<?php echo $baseUrl; ?>/contact.php"<?php if (($currentPage ?? '') === 'contact') echo ' aria-current="page" class="is-active"'; ?>>Kontakt</a></li>
+<?php $renderNavItems($navItems); ?>
       </ul>
     </nav>
     <div class="mobile-drawer__cta" data-js="auth-slot-mobile">
-      <button class="btn btn--ghost" type="button" data-js="open-login">Přihlásit</button>
-      <button class="btn btn--primary" type="button" data-js="open-register">Registrovat</button>
+<?php $renderAuthButtons(); ?>
     </div>
   </div>
 </header>
