@@ -80,6 +80,7 @@ require __DIR__ . '/partials/header.php';
             <span class="seat"></span>
 <?php endfor; ?>
           </div>
+          <p>Ideální pro skupiny, které chtějí pohodlně hrát bez rušení.</p>
           <button class="btn btn--primary" type="button" disabled data-tooltip="Přihlas se a rezervuj" data-auth-action="select-table">Vybrat</button>
         </article>
 <?php endforeach; ?>

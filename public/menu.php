@@ -63,6 +63,7 @@ require __DIR__ . '/partials/header.php';
         </section>
 <?php $index++; endforeach; ?>
       </div>
+      <p class="menu-note">Ceny jsou uvedeny v Kč a mohou se změnit podle sezónní nabídky.</p>
     </div>
   </section>
 </main>

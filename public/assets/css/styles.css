@@ -181,11 +181,6 @@ main.main {
   gap: var(--gap-lg);
 }
 
-.venue-info__hours {
-  font-weight: 600;
-  margin-bottom: var(--gap-md);
-}
-
 .hours-table table {
   width: 100%;
   border-collapse: collapse;

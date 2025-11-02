@@ -15,6 +15,7 @@ require __DIR__ . '/partials/header.php';
         <p>Vyrazte s partou na večer plný strategií, příběhů a speciálních piv. Rezervace zvládnete během pár kliknutí.</p>
         <div class="hero__actions">
           <a class="btn btn--primary" href="<?php echo $baseUrl; ?>/reservation.php">Rezervovat stůl</a>
+          <a class="btn btn--ghost" href="<?php echo $baseUrl; ?>/menu.php">Zobrazit menu</a>
         </div>
       </div>
       <div class="hero__media">
@@ -86,7 +87,16 @@ require __DIR__ . '/partials/header.php';
       <div>
         <h2>Kde nás najdete</h2>
         <p>Najdete nás kousek od metra, atmosféru tvoří dřevo, světýlka a regály her připravené k vyzkoušení.</p>
-        <p class="venue-info__hours">Otevíráme každý den, detailní časy najdete v sekci <a href="<?php echo $baseUrl; ?>/contact.php">Kontakt</a>.</p>
+        <div class="hours-table">
+          <table>
+            <caption>Otevírací doba</caption>
+            <tbody>
+              <tr><th scope="row">Po–Čt</th><td>16:00–23:00</td></tr>
+              <tr><th scope="row">Pá–So</th><td>14:00–01:00</td></tr>
+              <tr><th scope="row">Ne</th><td>14:00–22:00</td></tr>
+            </tbody>
+          </table>
+        </div>
         <address>
           Rohanská 42, Praha 8<br>
           <a href="tel:+420777123456">+420 777 123 456</a><br>
