@@ -33,12 +33,21 @@
     }
   };
 
-  $renderAuthButtons = function () {
+  $customAuthSlot = $authSlotContent ?? null;
+  $desktopAuthAttr = $customAuthSlot === null ? ' data-js="auth-slot"' : '';
+  $mobileAuthAttr = $customAuthSlot === null ? ' data-js="auth-slot-mobile"' : '';
+  $renderAuthButtons = function () use ($customAuthSlot) {
+    if ($customAuthSlot !== null) {
+      echo $customAuthSlot;
+      return;
+    }
 ?>
       <button class="btn btn--ghost" type="button" data-js="open-login">Přihlásit</button>
       <button class="btn btn--primary" type="button" data-js="open-register">Registrovat</button>
 <?php
   };
+
+  unset($authSlotContent);
 ?>
 
 <header class="site-header" data-component="site-header">
@@ -60,7 +69,7 @@
 <?php $renderNavItems($navItems); ?>
       </ul>
     </nav>
-    <div class="site-header__cta" data-js="auth-slot">
+    <div class="site-header__cta"<?php echo $desktopAuthAttr; ?> data-js-container="auth">
 <?php $renderAuthButtons(); ?>
     </div>
   </div>
@@ -74,7 +83,7 @@
 <?php $renderNavItems($navItems); ?>
       </ul>
     </nav>
-    <div class="mobile-drawer__cta" data-js="auth-slot-mobile">
+    <div class="mobile-drawer__cta"<?php echo $mobileAuthAttr; ?> data-js-container="auth-mobile">
 <?php $renderAuthButtons(); ?>
     </div>
   </div>
