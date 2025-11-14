@@ -4,7 +4,7 @@ $pageTitle = 'Administrace';
 $pageDescription = 'Interní administrační rozhraní BoardZone pro správu rezervací, menu a zpráv.';
 require __DIR__ . '/partials/head.php';
 ?>
-<main id="main-content" class="main">
+<main id="main-content" class="main" data-js="admin-content" aria-hidden="true">
   <section class="section admin-hero" aria-labelledby="admin-title">
     <div class="shell admin-hero__inner">
       <div>
@@ -205,13 +205,14 @@ require __DIR__ . '/partials/head.php';
   </section>
 </main>
 
-<div class="admin-login" role="dialog" aria-modal="true" aria-labelledby="admin-login-title" hidden data-js="admin-login">
+<div class="admin-login" role="dialog" aria-modal="true" aria-labelledby="admin-login-title" data-js="admin-login" data-state="open">
   <div class="admin-login__dialog" role="document">
     <header>
       <h2 id="admin-login-title">Přihlášení do administrace</h2>
       <p>Pro přístup k administračním funkcím zadejte své údaje.</p>
     </header>
-    <form class="admin-login__form" novalidate>
+    <div class="admin-login__status" role="status" aria-live="polite" data-js="admin-login-status"></div>
+    <form class="admin-login__form" novalidate data-js="admin-login-form">
       <label class="form__field">
         <span>E-mail</span>
         <input type="email" name="email" autocomplete="username" required placeholder="admin@boardzone.cz">
@@ -220,9 +221,10 @@ require __DIR__ . '/partials/head.php';
         <span>Heslo</span>
         <input type="password" name="password" autocomplete="current-password" required placeholder="••••••••">
       </label>
-      <div class="admin-login__actions">
+      <div class="admin-login__actions" data-js="admin-login-actions">
         <button class="btn btn--ghost" type="button" data-js="admin-cancel-login">Zrušit</button>
         <button class="btn btn--primary" type="submit" data-js="admin-confirm-login">Přihlásit</button>
+        <button class="btn btn--primary" type="button" data-js="admin-continue-login" hidden>Pokračovat do administrace</button>
       </div>
     </form>
   </div>
@@ -231,35 +233,101 @@ require __DIR__ . '/partials/head.php';
 <script>
   (function () {
     const loginDialog = document.querySelector('[data-js="admin-login"]');
+    const loginForm = loginDialog?.querySelector('[data-js="admin-login-form"]');
+    const statusElement = loginDialog?.querySelector('[data-js="admin-login-status"]');
     const openButtons = document.querySelectorAll('[data-js="admin-open-login"]');
-    const confirmButton = document.querySelector('[data-js="admin-confirm-login"]');
-    const cancelButton = document.querySelector('[data-js="admin-cancel-login"]');
+    const confirmButton = loginDialog?.querySelector('[data-js="admin-confirm-login"]');
+    const cancelButton = loginDialog?.querySelector('[data-js="admin-cancel-login"]');
+    const continueButton = loginDialog?.querySelector('[data-js="admin-continue-login"]');
+    const mainContent = document.querySelector('[data-js="admin-content"]');
     const focusableSelectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
     let lastFocusedElement = null;
+    let isAuthenticated = false;
+    let focusTimeout = null;
+
+    const setMainLock = (locked) => {
+      if (!mainContent) return;
+      if (locked) {
+        mainContent.setAttribute('data-state', 'locked');
+        mainContent.setAttribute('aria-hidden', 'true');
+        mainContent.setAttribute('inert', '');
+      } else {
+        mainContent.setAttribute('data-state', 'active');
+        mainContent.removeAttribute('aria-hidden');
+        mainContent.removeAttribute('inert');
+      }
+    };
+
+    const announceStatus = (message, type = 'info') => {
+      if (!statusElement) return;
+      statusElement.textContent = message;
+      statusElement.setAttribute('data-state', 'visible');
+      statusElement.setAttribute('data-type', type);
+    };
+
+    const clearStatus = () => {
+      if (!statusElement) return;
+      statusElement.textContent = '';
+      statusElement.removeAttribute('data-state');
+      statusElement.removeAttribute('data-type');
+    };
+
+    const focusFirstElement = () => {
+      if (!loginDialog) return;
+      if (focusTimeout) {
+        window.clearTimeout(focusTimeout);
+      }
+      focusTimeout = window.setTimeout(() => {
+        const focusable = Array.from(loginDialog.querySelectorAll(focusableSelectors)).filter((el) => !el.hasAttribute('disabled') && !el.hasAttribute('hidden'));
+        if (focusable.length) {
+          focusable[0].focus();
+        }
+      }, 0);
+    };
+
+    const setDialogState = (isOpen) => {
+      if (!loginDialog) return;
+      if (isOpen) {
+        loginDialog.setAttribute('data-state', 'open');
+        loginDialog.removeAttribute('aria-hidden');
+        document.body.classList.add('admin-login-open');
+        focusFirstElement();
+      } else {
+        loginDialog.setAttribute('data-state', 'closed');
+        loginDialog.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('admin-login-open');
+        if (lastFocusedElement instanceof HTMLElement) {
+          lastFocusedElement.focus();
+        }
+      }
+    };
+
+    const resetFormState = () => {
+      confirmButton?.removeAttribute('disabled');
+      continueButton?.setAttribute('hidden', '');
+      cancelButton?.removeAttribute('hidden');
+      loginForm?.reset();
+      clearStatus();
+    };
 
     const openLogin = () => {
       if (!loginDialog) return;
-      lastFocusedElement = document.activeElement;
-      loginDialog.hidden = false;
-      const focusable = loginDialog.querySelectorAll(focusableSelectors);
-      if (focusable.length) {
-        focusable[0].focus();
-      }
-      document.body.classList.add('admin-login-open');
+      lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      isAuthenticated = false;
+      resetFormState();
+      setMainLock(true);
+      setDialogState(true);
     };
 
     const closeLogin = () => {
       if (!loginDialog) return;
-      loginDialog.hidden = true;
-      document.body.classList.remove('admin-login-open');
-      if (lastFocusedElement instanceof HTMLElement) {
-        lastFocusedElement.focus();
-      }
+      setDialogState(false);
+      setMainLock(false);
     };
 
     const trapFocus = (event) => {
-      if (!loginDialog || loginDialog.hidden) return;
-      const focusable = Array.from(loginDialog.querySelectorAll(focusableSelectors)).filter(el => !el.hasAttribute('disabled'));
+      if (!loginDialog || loginDialog.getAttribute('data-state') !== 'open') return;
+      const focusable = Array.from(loginDialog.querySelectorAll(focusableSelectors)).filter((el) => !el.hasAttribute('disabled') && !el.hasAttribute('hidden'));
       if (!focusable.length) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
@@ -273,22 +341,60 @@ require __DIR__ . '/partials/head.php';
         }
       }
       if (event.key === 'Escape') {
-        closeLogin();
+        event.preventDefault();
+        if (continueButton && !continueButton.hasAttribute('hidden')) {
+          closeLogin();
+        } else {
+          announceStatus('Zůstaňte prosím přihlášeni nebo ukončete formulář tlačítkem Zrušit.', 'info');
+        }
       }
     };
 
-    openButtons.forEach((button) => button.addEventListener('click', openLogin));
-    confirmButton?.addEventListener('click', (event) => {
+    openButtons.forEach((button) => button.addEventListener('click', () => {
+      openLogin();
+    }));
+
+    loginForm?.addEventListener('submit', (event) => {
       event.preventDefault();
-      closeLogin();
+      if (!loginForm.reportValidity()) {
+        announceStatus('Zkontrolujte prosím vyplnění e-mailu i hesla.', 'error');
+        return;
+      }
+
+      announceStatus('Ověřujeme údaje…', 'info');
+      confirmButton?.setAttribute('disabled', '');
+
+      window.setTimeout(() => {
+        isAuthenticated = true;
+        announceStatus('Přihlášení úspěšné. Pokračujte do administrace.', 'success');
+        continueButton?.removeAttribute('hidden');
+        cancelButton?.setAttribute('hidden', '');
+        continueButton?.focus();
+      }, 600);
     });
+
     cancelButton?.addEventListener('click', (event) => {
       event.preventDefault();
+      if (continueButton && !continueButton.hasAttribute('hidden')) {
+        closeLogin();
+        return;
+      }
+      resetFormState();
+      announceStatus('Přihlášení bylo zrušeno. Zadejte údaje znovu.', 'info');
+      focusFirstElement();
+    });
+
+    continueButton?.addEventListener('click', () => {
+      if (!isAuthenticated) {
+        announceStatus('Dokončete prosím přihlášení.', 'error');
+        return;
+      }
       closeLogin();
     });
+
     document.addEventListener('keydown', trapFocus);
 
-    window.addEventListener('load', openLogin, { once: true });
+    openLogin();
   })();
 </script>
 </body>
