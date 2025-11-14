@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boardzone | Admin</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --surface: #ffffff;
+            --background: #f5f5f7;
+            --border: #e5e7eb;
+            --text: #1f2933;
+            --text-muted: #4b5563;
+            --success: #10b981;
+            font-size: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        h1, h2, h3 {
+            margin: 0 0 0.75rem;
+            font-weight: 600;
+        }
+
+        p {
+            margin: 0 0 0.75rem;
+        }
+
+        button {
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .page {
+            min-height: 100vh;
+            padding: 1.5rem 1rem 3rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        header h1 {
+            font-size: 1.75rem;
+        }
+
+        .subtitle {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .logout-btn {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 0.5rem 1rem;
+            color: var(--text);
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+        }
+
+        .grid {
+            display: grid;
+            gap: 1.25rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        thead {
+            background: #f8f9fc;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        form {
+            display: grid;
+            gap: 1rem;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 0.35rem;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.7rem 0.85rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            font: inherit;
+            background: #fff;
+            transition: border 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.25);
+        }
+
+        .menu-items {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .menu-item {
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #fff;
+            display: grid;
+            gap: 0.35rem;
+        }
+
+        .menu-item strong {
+            font-size: 1rem;
+        }
+
+        .messages {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .message {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            background: #fff;
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .message-header {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .message-email {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .message-text {
+            line-height: 1.5;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            z-index: 100;
+        }
+
+        .modal {
+            width: min(420px, 100%);
+            background: var(--surface);
+            border-radius: 18px;
+            padding: 2rem;
+            display: grid;
+            gap: 1.5rem;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
+        }
+
+        .modal h2 {
+            text-align: center;
+        }
+
+        .modal p {
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .login-form {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (min-width: 600px) {
+            .page {
+                padding: 2rem;
+            }
+
+            .grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+
+            .menu-section {
+                display: grid;
+                gap: 1.5rem;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            }
+
+            .menu-section form {
+                grid-row: span 2;
+            }
+        }
+
+        @media (min-width: 960px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .dashboard {
+                display: grid;
+                gap: 1.5rem;
+                grid-template-columns: 2fr 1fr;
+            }
+
+            .reservations-card {
+                grid-column: 1 / -1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="loginOverlay" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+        <div class="modal">
+            <div>
+                <h2 id="loginTitle">Přihlášení do administrace</h2>
+                <p>Pouze pro personál Boardzone. Přihlaste se, abyste mohli spravovat rezervace a obsah.</p>
+            </div>
+            <form class="login-form" id="loginForm">
+                <div>
+                    <label for="username">Uživatelské jméno</label>
+                    <input type="text" id="username" name="username" placeholder="např. petr" required>
+                </div>
+                <div>
+                    <label for="password">Heslo</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="primary-btn">Přihlásit</button>
+            </form>
+        </div>
+    </div>
+
+    <main class="page hidden" id="adminContent" aria-hidden="true">
+        <header>
+            <div>
+                <h1>Boardzone Admin</h1>
+                <p class="subtitle">Správa rezervací, menu a zpráv zákazníků</p>
+            </div>
+            <button class="logout-btn" id="logoutBtn" type="button">Odhlásit</button>
+        </header>
+
+        <div class="dashboard">
+            <section class="card reservations-card" aria-labelledby="reservationsTitle">
+                <div class="card-header">
+                    <h2 id="reservationsTitle">Přehled rezervací</h2>
+                    <span class="tag">Dnes: 6 rezervací</span>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Jméno</th>
+                                <th>Datum</th>
+                                <th>Čas</th>
+                                <th>Osob</th>
+                                <th>Poznámka</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Jana Nováková</td>
+                                <td>12. 9. 2024</td>
+                                <td>18:30</td>
+                                <td>4</td>
+                                <td>Preferuje stůl u okna</td>
+                            </tr>
+                            <tr>
+                                <td>Martin Dvořák</td>
+                                <td>12. 9. 2024</td>
+                                <td>19:00</td>
+                                <td>2</td>
+                                <td>Chce zahrát "Catan"</td>
+                            </tr>
+                            <tr>
+                                <td>Lucie Benešová</td>
+                                <td>13. 9. 2024</td>
+                                <td>17:00</td>
+                                <td>5</td>
+                                <td>Narozeninová oslava</td>
+                            </tr>
+                            <tr>
+                                <td>Adam Polák</td>
+                                <td>13. 9. 2024</td>
+                                <td>20:00</td>
+                                <td>3</td>
+                                <td>Vegetariánské menu</td>
+                            </tr>
+                            <tr>
+                                <td>Simona Kovářová</td>
+                                <td>14. 9. 2024</td>
+                                <td>16:30</td>
+                                <td>6</td>
+                                <td>Potřebuje vysokou židličku</td>
+                            </tr>
+                            <tr>
+                                <td>Roman Černý</td>
+                                <td>14. 9. 2024</td>
+                                <td>18:00</td>
+                                <td>2</td>
+                                <td>Bez alergií</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="card" aria-labelledby="menuTitle">
+                <div class="card-header">
+                    <h2 id="menuTitle">Úprava menu restaurace</h2>
+                    <span class="tag">Poslední aktualizace: dnes</span>
+                </div>
+                <div class="menu-section">
+                    <form>
+                        <div>
+                            <label for="itemName">Název položky</label>
+                            <input type="text" id="itemName" name="itemName" placeholder="Např. Burger Boardzone">
+                        </div>
+                        <div>
+                            <label for="itemPrice">Cena</label>
+                            <input type="text" id="itemPrice" name="itemPrice" placeholder="249 Kč">
+                        </div>
+                        <div>
+                            <label for="itemCategory">Kategorie</label>
+                            <select id="itemCategory" name="itemCategory">
+                                <option value="">Vyberte kategorii</option>
+                                <option value="burgers">Burgery</option>
+                                <option value="drinks">Nápoje</option>
+                                <option value="desserts">Dezerty</option>
+                                <option value="specials">Speciály týdne</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="itemDescription">Popis</label>
+                            <textarea id="itemDescription" name="itemDescription" placeholder="Stručný popis položky"></textarea>
+                        </div>
+                        <button type="button" class="primary-btn">Uložit položku</button>
+                    </form>
+                    <div class="menu-items" aria-live="polite">
+                        <article class="menu-item">
+                            <div class="item-header">
+                                <strong>Boardzone Burger</strong>
+                                <span class="item-price">249 Kč · Burgery</span>
+                            </div>
+                            <p>Šťavnaté hovězí s cheddarem, karamelizovanou cibulkou a domácí omáčkou.</p>
+                        </article>
+                        <article class="menu-item">
+                            <div class="item-header">
+                                <strong>Elixir of Strategy</strong>
+                                <span class="item-price">95 Kč · Nápoje</span>
+                            </div>
+                            <p>Bylinkový čaj s citrusy a kapkou medu pro dlouhé večery plné her.</p>
+                        </article>
+                        <article class="menu-item">
+                            <div class="item-header">
+                                <strong>Dice Brownie</strong>
+                                <span class="item-price">89 Kč · Dezerty</span>
+                            </div>
+                            <p>Čokoládové brownie ve tvaru kostky s malinovým coulis.</p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card" aria-labelledby="messagesTitle">
+                <div class="card-header">
+                    <h2 id="messagesTitle">Zprávy od uživatelů</h2>
+                    <span class="tag">Nové: 3</span>
+                </div>
+                <div class="messages">
+                    <article class="message">
+                        <div class="message-header">
+                            <h3>Barbora Horská</h3>
+                            <span class="message-email">barbora.horska@email.cz</span>
+                        </div>
+                        <p class="message-text">Dobrý den, je možné si rezervovat soukromý salonek na pátek? Kolik je kapacita?</p>
+                    </article>
+                    <article class="message">
+                        <div class="message-header">
+                            <h3>Tomáš Kryl</h3>
+                            <span class="message-email">t.kryl@gmail.com</span>
+                        </div>
+                        <p class="message-text">Máte v nabídce veganské dezerty? Rádi bychom přišli se skupinou přátel.</p>
+                    </article>
+                    <article class="message">
+                        <div class="message-header">
+                            <h3>Lenka Hrubá</h3>
+                            <span class="message-email">lenka.hruba@seznam.cz</span>
+                        </div>
+                        <p class="message-text">Chtěla bych darovat voucher na herní večer. Nabízíte něco podobného?</p>
+                    </article>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const loginOverlay = document.getElementById('loginOverlay');
+        const adminContent = document.getElementById('adminContent');
+        const loginForm = document.getElementById('loginForm');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        function openDashboard() {
+            loginOverlay.classList.add('hidden');
+            adminContent.classList.remove('hidden');
+            adminContent.setAttribute('aria-hidden', 'false');
+        }
+
+        function resetLogin() {
+            loginForm.reset();
+            adminContent.classList.add('hidden');
+            adminContent.setAttribute('aria-hidden', 'true');
+            loginOverlay.classList.remove('hidden');
+            document.getElementById('username').focus();
+        }
+
+        loginForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            openDashboard();
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            resetLogin();
+        });
+
+        window.addEventListener('load', () => {
+            document.getElementById('username').focus();
+        });
+    </script>
+</body>
+</html>
