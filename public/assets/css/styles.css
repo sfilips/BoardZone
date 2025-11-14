@@ -960,3 +960,222 @@ main.main {
     grid-column: span 1;
   }
 }
+
+/* Admin page */
+.admin-hero {
+  padding-top: clamp(3rem, 5vw, 4rem);
+  padding-bottom: clamp(2rem, 5vw, 3rem);
+  background: radial-gradient(circle at 20% 15%, rgba(63, 185, 80, 0.25), transparent 55%),
+    linear-gradient(135deg, rgba(23, 26, 33, 0.9), rgba(15, 17, 22, 0.95));
+  border-bottom: 1px solid rgba(229, 231, 235, 0.05);
+}
+
+.admin-hero__inner {
+  display: grid;
+  gap: var(--gap-lg);
+}
+
+.admin-hero__lead {
+  color: var(--clr-muted);
+  max-width: 45ch;
+}
+
+.admin-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+  align-self: flex-start;
+}
+
+.admin-section {
+  padding-top: clamp(2rem, 4vw, 3.5rem);
+  padding-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+.admin-section__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  align-items: flex-start;
+  margin-bottom: var(--gap-lg);
+}
+
+.admin-section__header .section__subtext {
+  color: var(--clr-muted);
+}
+
+.admin-table {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.admin-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--clr-surface);
+  min-width: 600px;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.9rem 1.25rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.06);
+  white-space: nowrap;
+}
+
+.admin-table td:last-child {
+  white-space: normal;
+}
+
+.admin-menu__grid {
+  display: grid;
+  gap: var(--gap-lg);
+}
+
+.admin-form {
+  display: grid;
+  gap: var(--gap-md);
+  background: rgba(23, 26, 33, 0.85);
+}
+
+.admin-menu__list {
+  display: grid;
+  gap: var(--gap-md);
+  background: rgba(23, 26, 33, 0.85);
+}
+
+.admin-menu__list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--gap-md);
+}
+
+.admin-menu__list li {
+  display: grid;
+  gap: var(--gap-xs);
+  padding-bottom: var(--gap-sm);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.05);
+}
+
+.admin-menu__list li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.admin-menu__list h4 {
+  margin: 0;
+}
+
+.admin-menu__list span {
+  color: var(--clr-muted);
+  font-size: var(--fs-sm);
+}
+
+.admin-messages {
+  display: grid;
+  gap: var(--gap-md);
+}
+
+.admin-message {
+  display: grid;
+  gap: var(--gap-md);
+  background: rgba(23, 26, 33, 0.9);
+}
+
+.admin-message header {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-message footer {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-message__actions {
+  display: flex;
+  gap: var(--gap-xs);
+  flex-wrap: wrap;
+}
+
+.admin-login {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--gap-md);
+  background: rgba(9, 11, 15, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: 400;
+}
+
+.admin-login[hidden] {
+  display: none;
+}
+
+.admin-login__dialog {
+  width: min(100%, 420px);
+  background: var(--clr-surface);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.5rem, 4vw, 2.75rem);
+  display: grid;
+  gap: var(--gap-md);
+  box-shadow: var(--shadow-soft);
+}
+
+.admin-login__dialog header h2 {
+  margin-bottom: 0.35rem;
+}
+
+.admin-login__dialog p {
+  margin: 0;
+  color: var(--clr-muted);
+}
+
+.admin-login__form {
+  display: grid;
+  gap: var(--gap-md);
+}
+
+.admin-login__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--gap-sm);
+}
+
+body.admin-login-open {
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .admin-section__header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .admin-menu__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 960px) {
+  .admin-hero__inner {
+    grid-template-columns: 3fr 2fr;
+    align-items: center;
+  }
+
+  .admin-messages {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
