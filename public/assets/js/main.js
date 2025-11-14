@@ -3,6 +3,8 @@ const app = (() => {
   let isLogged = false;
   let activeModal = null;
   let lastFocusedElement = null;
+  let requiresAuth = false;
+  let enforcedModalId = null;
 
   const focusableSelectors = [
     'a[href]',
@@ -18,6 +20,7 @@ const app = (() => {
 
   function init() {
     isLogged = window.localStorage.getItem(AUTH_KEY) === '1';
+    requiresAuth = document.body.dataset.requiresAuth === 'true';
     renderAuthSlots();
     bindGlobalEvents();
     initMobileNav();
@@ -25,6 +28,7 @@ const app = (() => {
     initMenuSearch();
     initTableFilters();
     updateTableButtons();
+    enforceAuthModalIfNeeded();
   }
 
   function bindGlobalEvents() {
@@ -44,6 +48,9 @@ const app = (() => {
     const registerTrigger = event.target.closest('[data-js="open-register"]');
     if (registerTrigger) {
       event.preventDefault();
+      if (enforcedModalId && enforcedModalId !== 'register-modal') {
+        return;
+      }
       openModal('register-modal');
       return;
     }
@@ -51,13 +58,21 @@ const app = (() => {
     const closeTrigger = event.target.closest('[data-js="close-modal"]');
     if (closeTrigger && closeTrigger.closest('.modal')) {
       event.preventDefault();
-      closeModal(closeTrigger.closest('.modal'));
+      const modal = closeTrigger.closest('.modal');
+      if (isModalEnforced(modal)) {
+        return;
+      }
+      closeModal(modal);
       return;
     }
 
     const overlay = event.target.closest('[data-js="modal-overlay"]');
     if (overlay && overlay.closest('.modal')) {
-      closeModal(overlay.closest('.modal'));
+      const modal = overlay.closest('.modal');
+      if (isModalEnforced(modal)) {
+        return;
+      }
+      closeModal(modal);
       return;
     }
 
@@ -71,6 +86,10 @@ const app = (() => {
 
   function handleKeydown(event) {
     if (event.key === 'Escape' && activeModal) {
+      if (isModalEnforced(activeModal)) {
+        event.preventDefault();
+        return;
+      }
       closeModal(activeModal);
     }
 
@@ -101,7 +120,7 @@ const app = (() => {
     isLogged = true;
     renderAuthSlots();
     updateTableButtons();
-    closeModal(activeModal);
+    closeModal(activeModal, { force: true });
   }
 
   function simulateLogout() {
@@ -109,6 +128,7 @@ const app = (() => {
     isLogged = false;
     renderAuthSlots();
     updateTableButtons();
+    enforceAuthModalIfNeeded();
   }
 
   function renderAuthSlots() {
@@ -147,30 +167,48 @@ const app = (() => {
     });
   }
 
-  function openModal(id) {
+  function openModal(id, options = {}) {
     const modal = document.getElementById(id);
     if (!modal) {
       return;
     }
+    const settings = { enforce: false, ...options };
+    if (!settings.enforce && enforcedModalId && modal.id !== enforcedModalId) {
+      return;
+    }
     if (activeModal && activeModal !== modal) {
-      closeModal(activeModal, { restoreFocus: false });
+      closeModal(activeModal, { restoreFocus: false, force: settings.enforce });
     }
     modal.hidden = false;
     activeModal = modal;
     lastFocusedElement = document.activeElement;
+    if (settings.enforce) {
+      enforcedModalId = modal.id;
+      modal.dataset.enforce = 'true';
+    } else {
+      modal.dataset.enforce = 'false';
+    }
     focusFirstElement(modal);
   }
 
-  function closeModal(modal, options = { restoreFocus: true }) {
+  function closeModal(modal, options = {}) {
     if (!modal) {
       return;
     }
+    const settings = { restoreFocus: true, force: false, ...options };
+    if (!settings.force && isModalEnforced(modal)) {
+      return;
+    }
     modal.hidden = true;
+    modal.dataset.enforce = 'false';
     if (activeModal === modal) {
       activeModal = null;
     }
-    if (options.restoreFocus && lastFocusedElement) {
+    if (settings.restoreFocus && lastFocusedElement) {
       lastFocusedElement.focus({ preventScroll: true });
+    }
+    if (settings.force && enforcedModalId === modal.id) {
+      enforcedModalId = null;
     }
   }
 
@@ -203,6 +241,16 @@ const app = (() => {
     } else if (!event.shiftKey && activeElement === last) {
       event.preventDefault();
       first.focus();
+    }
+  }
+
+  function isModalEnforced(modal) {
+    return Boolean(modal && enforcedModalId && modal.id === enforcedModalId);
+  }
+
+  function enforceAuthModalIfNeeded() {
+    if (requiresAuth && !isLogged) {
+      openModal('login-modal', { enforce: true });
     }
   }
 
