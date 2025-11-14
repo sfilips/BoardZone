@@ -591,6 +591,148 @@ main.main {
   margin-bottom: var(--gap-md);
 }
 
+.admin-body {
+  background: radial-gradient(circle at 0 0, rgba(63, 185, 80, 0.15), transparent 55%), var(--clr-bg);
+}
+
+.admin-main {
+  padding-bottom: 6rem;
+}
+
+.admin-hero .section__header {
+  max-width: 52ch;
+}
+
+.admin-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--gap-md);
+}
+
+.admin-kpi {
+  background: linear-gradient(135deg, rgba(63, 185, 80, 0.25), rgba(23, 26, 33, 0.95));
+  border-radius: var(--radius-lg);
+  padding: var(--gap-md);
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  gap: var(--gap-xs);
+}
+
+.admin-kpi__label {
+  font-size: var(--fs-sm);
+  color: var(--clr-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-kpi__value {
+  font-size: var(--fs-xl);
+  font-weight: 600;
+}
+
+.admin-kpi__meta {
+  font-size: var(--fs-sm);
+  color: var(--clr-accent);
+}
+
+.admin-section {
+  padding-top: var(--gap-lg);
+}
+
+.admin-layout {
+  display: grid;
+  gap: var(--gap-lg);
+}
+
+@media (min-width: 900px) {
+  .admin-layout {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.admin-card {
+  background: var(--clr-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--gap-md);
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  gap: var(--gap-md);
+}
+
+.admin-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.admin-list,
+.admin-task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--gap-sm);
+}
+
+.admin-list__item,
+.admin-task {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  padding: var(--gap-sm);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.admin-list__primary,
+.admin-task__title {
+  font-weight: 600;
+}
+
+.admin-list__secondary,
+.admin-task__meta,
+.admin-note__footer {
+  color: var(--clr-muted);
+  font-size: var(--fs-sm);
+}
+
+.admin-list__time,
+.admin-task__status {
+  font-weight: 500;
+  color: var(--clr-accent);
+}
+
+.admin-note {
+  display: grid;
+  gap: var(--gap-sm);
+  padding: var(--gap-md);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-md);
+}
+
+.admin-note strong {
+  color: var(--clr-primary);
+}
+
+@media (max-width: 600px) {
+  .admin-card__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-list__item,
+  .admin-task {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-list__time,
+  .admin-task__status {
+    align-self: flex-end;
+  }
+}
+
 .reservation-form {
   display: grid;
   gap: var(--gap-md);
