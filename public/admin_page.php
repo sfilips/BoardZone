@@ -1,27 +1,37 @@
 <?php
+require_once __DIR__ . '/partials/admin-auth.php';
+
+if (isset($_POST['action']) && $_POST['action'] === 'logout') {
+    boardzone_log_out_admin();
+    boardzone_admin_redirect('/admin_login.php?logged_out=1');
+}
+
+boardzone_require_admin();
+
 $brandName = 'BoardZone';
 $pageTitle = 'Admin';
 $currentPage = 'admin';
 $bodyClasses = ['layout-body', 'admin-body'];
-$bodyAttributes = ['data-requires-auth' => 'true'];
 
 $stats = [
-  ['label' => 'Aktivní rezervace', 'value' => '18', 'change' => '+6 dne'],
-  ['label' => 'Nové registrace', 'value' => '12', 'change' => '+4 dnes'],
-  ['label' => 'Obsazenost', 'value' => '76 %', 'change' => 'večer 94 %'],
+    ['label' => 'Aktivní rezervace', 'value' => '18', 'change' => '+6 dnes'],
+    ['label' => 'Nové registrace', 'value' => '12', 'change' => '+4 dnes'],
+    ['label' => 'Obsazenost', 'value' => '76 %', 'change' => 'večer 94 %'],
 ];
 
 $tasks = [
-  ['title' => 'Potvrdit skupinovou rezervaci', 'time' => '18:00 dnes', 'status' => 'Čeká'],
-  ['title' => 'Doplnit zásoby nápojů', 'time' => 'Do 16:00', 'status' => 'Probíhá'],
-  ['title' => 'Zkontrolovat nové hry', 'time' => 'Zítra dopoledne', 'status' => 'Plán'],
+    ['title' => 'Potvrdit skupinovou rezervaci', 'time' => '18:00 dnes', 'status' => 'Čeká'],
+    ['title' => 'Doplnit zásoby nápojů', 'time' => 'Do 16:00', 'status' => 'Probíhá'],
+    ['title' => 'Zkontrolovat nové hry', 'time' => 'Zítra dopoledne', 'status' => 'Plán'],
 ];
 
 $upcoming = [
-  ['name' => 'Tým Meeple Masters', 'time' => '15:30', 'size' => 4, 'table' => 'M-02'],
-  ['name' => 'Rodina Novákova', 'time' => '17:00', 'size' => 5, 'table' => 'L-01'],
-  ['name' => 'Speed Chess Liga', 'time' => '19:00', 'size' => 6, 'table' => 'L-02'],
+    ['name' => 'Tým Meeple Masters', 'time' => '15:30', 'size' => 4, 'table' => 'M-02'],
+    ['name' => 'Rodina Novákova', 'time' => '17:00', 'size' => 5, 'table' => 'L-01'],
+    ['name' => 'Speed Chess Liga', 'time' => '19:00', 'size' => 6, 'table' => 'L-02'],
 ];
+
+$adminEmail = $_SESSION['admin_user']['email'] ?? BOARDZONE_ADMIN_EMAIL;
 
 require __DIR__ . '/partials/head.php';
 require __DIR__ . '/partials/header.php';
@@ -32,8 +42,15 @@ require __DIR__ . '/partials/header.php';
       <header class="section__header">
         <p class="eyebrow">Admin dashboard</p>
         <h1>Vítej zpět v administraci BoardZone</h1>
-        <p>Spravuj rezervace, sleduj obsazenost a připrav se na dnešní hosty. Přihlášení je zatím pouze demonstrační.</p>
+        <p>Spravuj rezervace, sleduj obsazenost a připrav se na dnešní hosty.</p>
       </header>
+      <div class="admin-hero__meta">
+        <p>Přihlášený účet: <strong><?php echo htmlspecialchars($adminEmail, ENT_QUOTES, 'UTF-8'); ?></strong></p>
+        <form class="admin-logout" method="post">
+          <input type="hidden" name="action" value="logout">
+          <button class="btn btn--ghost" type="submit">Odhlásit</button>
+        </form>
+      </div>
       <div class="admin-kpi-grid" role="list">
 <?php foreach ($stats as $item): ?>
         <article class="admin-kpi" role="listitem">
@@ -102,7 +119,4 @@ require __DIR__ . '/partials/header.php';
 </main>
 <?php
 require __DIR__ . '/partials/footer.php';
-require __DIR__ . '/partials/auth-modals.php';
 ?>
-</body>
-</html>
